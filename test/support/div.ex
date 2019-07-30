@@ -1,7 +1,7 @@
 defmodule Div do
   use ExxHtml
 
-  def render(%{children: children}) do
-    ~x(<div>#{children}</div>)
+  def render(%{attributes: %{"id" => id}, children: children}) do
+    ~x(<div id=#{id}>#{children}</div>)
   end
 end

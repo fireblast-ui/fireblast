@@ -24,7 +24,9 @@ defimpl ExxHtml.Iolist, for: Exx.Element do
       |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
 
     [
-      "<#{name}#{Enum.map(attributes, fn {key, value} -> " #{key}=\"#{value |> Kernel.to_string()}\"" end)}>",
+      "<#{name}",
+      Enum.map(attributes, fn {key, value} -> [" #{key}=\"", value, "\""] end),
+      ">",
       new_children,
       "</#{name}>"
     ]
