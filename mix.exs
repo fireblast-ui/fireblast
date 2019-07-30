@@ -21,7 +21,7 @@ defmodule ExxHtml.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exx, path: "../exx"}
+      {:exx, github: "olafura/exx", branch: "something_better"}
     ]
   end
 end

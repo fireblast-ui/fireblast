@@ -4,6 +4,7 @@ defmodule ExxHtml do
   alias ExxHtml.Iolist
 
   def process_exx(exx, _) do
-    {:ok, Iolist.to_iolist(exx)}
+    {:safe, Iolist.to_iolist(exx)}
+    |> IO.inspect()
   end
 end
