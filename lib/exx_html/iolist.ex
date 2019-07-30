@@ -4,7 +4,21 @@ defprotocol ExxHtml.Iolist do
 end
 
 defimpl ExxHtml.Iolist, for: Exx.Element do
-  def to_iolist(%{name: name, attributes: attributes, children: children}) do
+  def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}) do
+    new_children =
+      children
+      |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
+
+    quoted_attributes = {:%{}, [], Enum.to_list(attributes)}
+    quote do
+      {:safe, iolist} = apply(String.to_atom("Elixir." <> unquote(name)), :render, [%{attributes: unquote(quoted_attributes), children: unquote(new_children)}])
+      iolist
+      |> List.flatten()
+    end
+    |> List.wrap()
+  end
+
+  def to_iolist(%{name: name, attributes: attributes, children: children, type: :tag}) do
     new_children =
       children
       |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
@@ -35,6 +49,16 @@ end
 defimpl ExxHtml.Iolist, for: BitString do
   def to_iolist(binary) do
     [binary]
+  end
+end
+
+defimpl ExxHtml.Iolist, for: Tuple do
+  def to_iolist({:safe, iolist}) do
+    iolist
+  end
+
+  def to_iolist(tuple) do
+    [tuple]
   end
 end
 

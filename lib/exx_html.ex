@@ -12,6 +12,5 @@ defmodule ExxHtml do
 
   def process_exx(exx, _) do
     {:safe, Iolist.to_iolist(exx)}
-    |> IO.inspect()
   end
 end
