@@ -10,7 +10,7 @@ defmodule ExxHtml do
     end
   end
 
-  def process_exx(exx, _) do
-    {:safe, Iolist.to_iolist(exx)}
+  def process_exx(exx, env) do
+    {:safe, Iolist.to_iolist(exx, env)}
   end
 end

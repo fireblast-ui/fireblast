@@ -3,6 +3,8 @@ defmodule ExxHtmlTest do
   doctest ExxHtml
   use ExxHtml
 
+  alias ExxHtml.TestComponent
+
   test "simple test" do
     assert {:safe, iolist} = ~x(<div id="1">1</div>)
     assert ~s(<div id="1">1</div>) == :erlang.iolist_to_binary(iolist)

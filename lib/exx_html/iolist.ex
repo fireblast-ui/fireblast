@@ -1,23 +1,31 @@
 defprotocol ExxHtml.Iolist do
   @fallback_to_any true
-  def to_iolist(data)
+  def to_iolist(data, env)
 end
 
 defimpl ExxHtml.Iolist, for: Exx.Element do
-  def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}) do
+  def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, env) do
     new_children =
       children
-      |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
+      |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
 
-    {:safe, iolist} = apply(String.to_atom("Elixir." <> name), :render, [%{attributes: attributes, children: new_children}])
+    atom_module = String.to_atom("Elixir." <> name)
+    module_alias = Keyword.get(env.aliases, atom_module)
+
+    module = if module_alias do
+      module_alias
+    else
+      atom_module
+    end
+    {:safe, iolist} = apply(module, :render, [%{attributes: attributes, children: new_children}])
     iolist
     |> List.flatten()
   end
 
-  def to_iolist(%{name: name, attributes: attributes, children: children, type: :tag}) do
+  def to_iolist(%{name: name, attributes: attributes, children: children, type: :tag}, env) do
     new_children =
       children
-      |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
+      |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
 
     [
       "<#{name}",
@@ -31,46 +39,50 @@ defimpl ExxHtml.Iolist, for: Exx.Element do
 end
 
 defimpl ExxHtml.Iolist, for: Exx.Fragment do
-  def to_iolist(%{children: children}) do
+  def to_iolist(%{children: children}, env) do
     children
-    |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
+    |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
   end
 end
 
 defimpl ExxHtml.Iolist, for: List do
-  def to_iolist(list) do
+  def to_iolist(list, env) do
     list
-    |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
+    |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
   end
 end
 
 defimpl ExxHtml.Iolist, for: BitString do
-  def to_iolist(binary) do
+  def to_iolist(binary, _) do
     [binary]
   end
 end
 
 defimpl ExxHtml.Iolist, for: Tuple do
-  def to_iolist({:safe, iolist}) do
+  def to_iolist({:safe, iolist}, _) do
     iolist
   end
 
   # for variables
-  def to_iolist({atom1, list, atom2} = tuple) when is_atom(atom1) and is_list(list) and is_atom(atom2) do
+  def to_iolist({atom1, list, atom2} = tuple, _) when is_atom(atom1) and is_list(list) and is_atom(atom2) do
     [
-      quote do
-        ExxHtml.Iolist.to_iolist(unquote(tuple))
+      quote bind_quoted: [tuple: tuple] do
+        if is_list(tuple) do
+          tuple
+        else
+          to_string(tuple)
+        end
       end
     ]
   end
 
-  def to_iolist(tuple) do
+  def to_iolist(tuple, _) do
     [ tuple ]
   end
 end
 
 defimpl ExxHtml.Iolist, for: Any do
-  def to_iolist(other) do
+  def to_iolist(other, _) do
     [to_string(other)]
   end
 end
