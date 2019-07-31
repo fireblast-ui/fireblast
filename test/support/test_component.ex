@@ -1,4 +1,4 @@
-defmodule Div do
+defmodule TestComponent do
   use ExxHtml
 
   def render(%{attributes: %{"id" => id}, children: children}) do

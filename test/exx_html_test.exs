@@ -9,7 +9,7 @@ defmodule ExxHtmlTest do
   end
 
   test "module test" do
-    assert {:safe, iolist} = ~x(<Div id="1">1</Div>)
+    assert {:safe, iolist} = ~x(<TestComponent id="1">1</TestComponent>)
     assert ~s(<div id="1">1</div>) == :erlang.iolist_to_binary(iolist)
   end
 
@@ -33,6 +33,6 @@ defmodule ExxHtmlTest do
   end
 
   def test_function(arg) do
-    ~x(<Div id="1">#{arg}</Div>)
+    ~x(<TestComponent id="1">#{arg}</TestComponent>)
   end
 end
