@@ -9,13 +9,9 @@ defimpl ExxHtml.Iolist, for: Exx.Element do
       children
       |> Enum.flat_map(&ExxHtml.Iolist.to_iolist/1)
 
-    quoted_attributes = {:%{}, [], Enum.to_list(attributes)}
-    quote do
-      {:safe, iolist} = apply(String.to_atom("Elixir." <> unquote(name)), :render, [%{attributes: unquote(quoted_attributes), children: unquote(new_children)}])
-      iolist
-      |> List.flatten()
-    end
-    |> List.wrap()
+    {:safe, iolist} = apply(String.to_atom("Elixir." <> name), :render, [%{attributes: attributes, children: new_children}])
+    iolist
+    |> List.flatten()
   end
 
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :tag}) do
@@ -59,8 +55,17 @@ defimpl ExxHtml.Iolist, for: Tuple do
     iolist
   end
 
+  # for variables
+  def to_iolist({atom1, list, atom2} = tuple) when is_atom(atom1) and is_list(list) and is_atom(atom2) do
+    [
+      quote do
+        ExxHtml.Iolist.to_iolist(unquote(tuple))
+      end
+    ]
+  end
+
   def to_iolist(tuple) do
-    [tuple]
+    [ tuple ]
   end
 end
 
