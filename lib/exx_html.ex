@@ -11,6 +11,8 @@ defmodule ExxHtml do
   end
 
   def process_exx(exx, env) do
-    {:safe, Iolist.to_iolist(exx, env)}
+    %{iolist: iolist, dynamic: dynamic} = Iolist.to_iolist(exx, %{env: env, dynamic: [], iolist: [], vars_count: 0})
+    safe = {:safe, iolist}
+    {:__block__, [], dynamic ++ [safe]}
   end
 end

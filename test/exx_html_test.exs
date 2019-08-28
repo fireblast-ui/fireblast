@@ -23,8 +23,7 @@ defmodule ExxHtmlTest do
   test "Mapping over of children" do
     list = [1, 2, 3]
     render_item = fn item ->
-      {:safe, iolist} = ~x(<p>#{item}</p>)
-      iolist
+      ~x(<p>#{item}</p>)
     end
     assert {:safe, iolist} = ~x(
       <div id="1">
