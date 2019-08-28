@@ -9,6 +9,7 @@ defmodule Fireblast.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      description: "Fireblast is html component library",
       package: package()
     ]
   end

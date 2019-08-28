@@ -1,6 +1,6 @@
 # Fireblast
 
-**TODO: Add description**
+Fireblast is a html component library that uses a JSX like syntax
 
 ## Installation
 
