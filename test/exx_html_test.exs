@@ -3,7 +3,7 @@ defmodule ExxHtmlTest do
   doctest ExxHtml
   use ExxHtml
 
-  alias ExxHtml.TestComponent
+  alias ExxHtml.{TestComponent, MyCounter, DashboardUnit, Scoreboard}
 
   test "simple test" do
     assert {:safe, iolist} = ~x(<div id="1">1</div>)
@@ -31,6 +31,74 @@ defmodule ExxHtmlTest do
       </div>
     )
     assert ~s(<div id="1"><p>1</p><p>2</p><p>3</p></div>) == :erlang.iolist_to_binary(iolist)
+  end
+
+  # From http://buildwithreact.com/tutorial/jsx
+  test "react test" do
+    game_scores = %{
+      player1: 2,
+      player2: 5
+    }
+
+    assert {:safe, _} = ~x(
+      <>
+        <div class_name="red">Children Text</div>
+        <MyCounter count=#{3 + 5} />
+        <DashboardUnit data_index="2">
+          <h1>Scores</h1>
+          <Scoreboard class_name="results" scores=#{game_scores} />
+        </DashboardUnit>
+      </>
+    )
+  end
+
+  # From https://github.com/tastejs/todomvc/blob/gh-pages/examples/react/js/footer.jsx
+  test "more react test" do
+    {:safe, clear_button} = ~x(
+      <button
+        class_name="clear-completed"
+        on_click=#{fn (_) -> nil end}>
+        Clear completed
+      </button>
+    )
+
+    now_showing = "ALL_TODOS"
+    count = 5
+    active_todo_word = if count > 1 , do: "items", else: "item"
+
+    assert {:safe, _} = ~x(
+      <footer class_name="footer">
+        <span class_name="todo-count">
+        <strong>#{count}</strong> #{active_todo_word} left
+          </span>
+        <ul class_name="filters">
+        <li>
+        <a
+          href="#/"
+          class_name=#{if now_showing === "ALL_TODOS", do: "selected", else: nil}>
+            All
+          </a>
+        </li>
+        #{" "}
+        <li>
+        <a
+          href="#/active"
+          class_name=#{if now_showing === "ACTIVE_TODOS", do: "selected", else: nil}>
+          Active
+        </a>
+        </li>
+          #{" "}
+        <li>
+        <a
+          href="#/completed"
+          class_name=#{if now_showing === "COMPLETED_TODOS", do: "selected", else: nil}>
+            Completed
+          </a>
+        </li>
+        </ul>
+        #{clear_button}
+      </footer>
+    )
   end
 
   def test_function(arg) do
