@@ -26,7 +26,7 @@ defmodule Fireblast.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exx, github: "olafura/exx", branch: "something_better"},
+      {:ex_xml, "~> 0.1"},
       {:uuid, "~> 1.1"}
     ]
   end

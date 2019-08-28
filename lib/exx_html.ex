@@ -1,5 +1,5 @@
 defmodule Fireblast do
-  use Exx
+  use ExXml
   alias Fireblast.Iolist
 
   defmacro __using__(_opts) do
@@ -9,9 +9,9 @@ defmodule Fireblast do
     end
   end
 
-  def process_exx(exx, env) do
+  def process_ex_xml(ex_xml, env) do
     %{iolist: iolist, dynamic: dynamic} =
-      Iolist.to_iolist(exx, %{env: env, dynamic: [], iolist: [], vars_count: 0})
+      Iolist.to_iolist(ex_xml, %{env: env, dynamic: [], iolist: [], vars_count: 0})
 
     safe = {:safe, iolist}
     {:__block__, [], dynamic ++ [safe]}

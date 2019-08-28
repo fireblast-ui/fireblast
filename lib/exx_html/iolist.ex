@@ -3,7 +3,7 @@ defprotocol Fireblast.Iolist do
   def to_iolist(data, acc)
 end
 
-defimpl Fireblast.Iolist, for: Exx.Element do
+defimpl Fireblast.Iolist, for: ExXml.Element do
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
@@ -59,7 +59,7 @@ defimpl Fireblast.Iolist, for: Exx.Element do
   end
 end
 
-defimpl Fireblast.Iolist, for: Exx.Fragment do
+defimpl Fireblast.Iolist, for: ExXml.Fragment do
   def to_iolist(%{children: children}, acc) do
     children
     |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
