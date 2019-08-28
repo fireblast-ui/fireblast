@@ -1,12 +1,12 @@
-defmodule ExxHtml do
+defmodule Fireblast do
 
   use Exx
-  alias ExxHtml.Iolist
+  alias Fireblast.Iolist
 
   defmacro __using__(_opts) do
     quote do
-      require ExxHtml
-      import ExxHtml
+      require Fireblast
+      import Fireblast
     end
   end
 

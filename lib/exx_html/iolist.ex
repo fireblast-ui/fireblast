@@ -1,13 +1,13 @@
-defprotocol ExxHtml.Iolist do
+defprotocol Fireblast.Iolist do
   @fallback_to_any true
   def to_iolist(data, acc)
 end
 
-defimpl ExxHtml.Iolist, for: Exx.Element do
+defimpl Fireblast.Iolist, for: Exx.Element do
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
+      |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
 
     atom_module = String.to_atom("Elixir." <> name)
     module_alias = Keyword.get(acc.env.aliases, atom_module)
@@ -19,7 +19,7 @@ defimpl ExxHtml.Iolist, for: Exx.Element do
     end
 
     var = Macro.var(:"arg#{UUID.uuid4(:hex)}", acc.env.module)
-    quoted_attributes = ExxHtml.Util.map_to_quoted_map(attributes)
+    quoted_attributes = Fireblast.Util.map_to_quoted_map(attributes)
     ast_body = quote generated: true do
       apply(
         unquote(module),
@@ -34,7 +34,7 @@ defimpl ExxHtml.Iolist, for: Exx.Element do
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :tag}, %{iolist: iolist} = acc) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
+      |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
 
     %{acc | iolist: iolist ++ List.flatten([
       "<#{name}",
@@ -46,27 +46,27 @@ defimpl ExxHtml.Iolist, for: Exx.Element do
   end
 end
 
-defimpl ExxHtml.Iolist, for: Exx.Fragment do
+defimpl Fireblast.Iolist, for: Exx.Fragment do
   def to_iolist(%{children: children}, acc) do
     children
-    |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
+    |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
   end
 end
 
-defimpl ExxHtml.Iolist, for: List do
+defimpl Fireblast.Iolist, for: List do
   def to_iolist(list, acc) do
     list
-    |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
+    |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
   end
 end
 
-defimpl ExxHtml.Iolist, for: BitString do
+defimpl Fireblast.Iolist, for: BitString do
   def to_iolist(binary, %{iolist: iolist} = acc) do
     %{acc | iolist: iolist ++ [binary]}
   end
 end
 
-defimpl ExxHtml.Iolist, for: Tuple do
+defimpl Fireblast.Iolist, for: Tuple do
   def to_iolist({:safe, safe_iolist}, %{iolist: iolist} = acc) do
     %{acc | iolist: iolist ++ safe_iolist}
   end
@@ -98,7 +98,7 @@ defimpl ExxHtml.Iolist, for: Tuple do
   end
 end
 
-defimpl ExxHtml.Iolist, for: Any do
+defimpl Fireblast.Iolist, for: Any do
   def to_iolist(other, %{iolist: iolist} = acc) do
     %{acc | iolist: iolist ++ [to_string(other)]}
   end

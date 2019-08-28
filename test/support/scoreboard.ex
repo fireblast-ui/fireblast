@@ -1,5 +1,5 @@
-defmodule ExxHtml.Scoreboard do
-  use ExxHtml
+defmodule Fireblast.Scoreboard do
+  use Fireblast
   def render(%{attributes: %{"class_name" => class_name, "scores" => scores}}) do
     ~x(<>
         #{

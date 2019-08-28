@@ -1,9 +1,9 @@
-defmodule ExxHtmlTest do
+defmodule FireblastTest do
   use ExUnit.Case
-  doctest ExxHtml
-  use ExxHtml
+  doctest Fireblast
+  use Fireblast
 
-  alias ExxHtml.{TestComponent, MyCounter, DashboardUnit, Scoreboard}
+  alias Fireblast.{TestComponent, MyCounter, DashboardUnit, Scoreboard}
 
   test "simple test" do
     assert {:safe, iolist} = ~x(<div id="1">1</div>)

@@ -1,9 +1,9 @@
-defmodule ExxHtml.MixProject do
+defmodule Fireblast.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :exx_html,
+      app: :fireblast,
       version: "0.1.0",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),

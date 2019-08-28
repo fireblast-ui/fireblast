@@ -1,4 +1,4 @@
-defmodule ExxHtml.Util do
+defmodule Fireblast.Util do
   def map_to_quoted_map(map) when is_map(map) do
     do_map_to_quoted_map(map)
   end
