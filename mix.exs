@@ -8,7 +8,8 @@ defmodule Fireblast.MixProject do
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package()
     ]
   end
 
@@ -27,6 +28,15 @@ defmodule Fireblast.MixProject do
     [
       {:exx, github: "olafura/exx", branch: "something_better"},
       {:uuid, "~> 1.1"}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Olafur Arason"],
+      licenses: ["MIT"],
+      links: %{github: "https://github.com/fireblast-ui/fireblast"},
+      files: ~w(lib LICENSE mix.exs README.md)
     ]
   end
 end
