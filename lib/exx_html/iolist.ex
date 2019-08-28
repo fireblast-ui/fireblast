@@ -19,7 +19,7 @@ defimpl ExxHtml.Iolist, for: Exx.Element do
     end
 
     var = Macro.var(:"arg#{UUID.uuid4(:hex)}", acc.env.module)
-    quoted_attributes = {:%{}, [], Map.to_list(attributes)}
+    quoted_attributes = ExxHtml.Util.map_to_quoted_map(attributes)
     ast_body = quote generated: true do
       apply(
         unquote(module),
