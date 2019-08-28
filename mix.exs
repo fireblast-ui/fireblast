@@ -25,7 +25,8 @@ defmodule ExxHtml.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exx, github: "olafura/exx", branch: "something_better"}
+      {:exx, github: "olafura/exx", branch: "something_better"},
+      {:uuid, "~> 1.1"}
     ]
   end
 end

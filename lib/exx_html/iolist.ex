@@ -1,88 +1,105 @@
 defprotocol ExxHtml.Iolist do
   @fallback_to_any true
-  def to_iolist(data, env)
+  def to_iolist(data, acc)
 end
 
 defimpl ExxHtml.Iolist, for: Exx.Element do
-  def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, env) do
-    new_children =
+  def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
+    %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
+      |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
 
     atom_module = String.to_atom("Elixir." <> name)
-    module_alias = Keyword.get(env.aliases, atom_module)
+    module_alias = Keyword.get(acc.env.aliases, atom_module)
 
     module = if module_alias do
-      module_alias
+      {:__aliases__, [alias: module_alias], [String.to_atom(name)]}
     else
       atom_module
     end
-    {:safe, iolist} = apply(module, :render, [%{attributes: attributes, children: new_children}])
-    iolist
-    |> List.flatten()
+
+    var = Macro.var(:"arg#{UUID.uuid4(:hex)}", acc.env.module)
+    quoted_attributes = {:%{}, [], Map.to_list(attributes)}
+    ast_body = quote generated: true do
+      apply(
+        unquote(module),
+        :render,
+        [%{attributes: unquote(quoted_attributes), children: unquote(children_iolist)}]
+      )
+    end
+    ast = quote do: {:safe, unquote(var)} = unquote(ast_body)
+    %{acc | iolist: acc.iolist ++ [var], dynamic: children_dynamic ++ [ast]}
   end
 
-  def to_iolist(%{name: name, attributes: attributes, children: children, type: :tag}, env) do
-    new_children =
+  def to_iolist(%{name: name, attributes: attributes, children: children, type: :tag}, %{iolist: iolist} = acc) do
+    %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
+      |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
 
-    [
+    %{acc | iolist: iolist ++ List.flatten([
       "<#{name}",
       Enum.map(attributes, fn {key, value} -> [" #{key}=\"", value, "\""] end),
       ">",
-      new_children,
+      children_iolist,
       "</#{name}>"
-    ]
-    |> List.flatten()
+    ]), dynamic: children_dynamic}
   end
 end
 
 defimpl ExxHtml.Iolist, for: Exx.Fragment do
-  def to_iolist(%{children: children}, env) do
+  def to_iolist(%{children: children}, acc) do
     children
-    |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
+    |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
   end
 end
 
 defimpl ExxHtml.Iolist, for: List do
-  def to_iolist(list, env) do
+  def to_iolist(list, acc) do
     list
-    |> Enum.flat_map(&(ExxHtml.Iolist.to_iolist(&1, env)))
+    |> Enum.reduce(acc, &ExxHtml.Iolist.to_iolist/2)
   end
 end
 
 defimpl ExxHtml.Iolist, for: BitString do
-  def to_iolist(binary, _) do
-    [binary]
+  def to_iolist(binary, %{iolist: iolist} = acc) do
+    %{acc | iolist: iolist ++ [binary]}
   end
 end
 
 defimpl ExxHtml.Iolist, for: Tuple do
-  def to_iolist({:safe, iolist}, _) do
-    iolist
+  def to_iolist({:safe, safe_iolist}, %{iolist: iolist} = acc) do
+    %{acc | iolist: iolist ++ safe_iolist}
   end
 
-  # for variables
-  def to_iolist({atom1, list, atom2} = tuple, _) when is_atom(atom1) and is_list(list) and is_atom(atom2) do
-    [
-      quote bind_quoted: [tuple: tuple] do
-        if is_list(tuple) do
-          tuple
-        else
-          to_string(tuple)
-        end
+  # for variables and function calls
+  def to_iolist({atom_or_tuple, list, atom_or_list} = tuple, acc) when (is_atom(atom_or_tuple) and is_list(list) and is_atom(atom_or_list)) or (is_tuple(atom_or_tuple) and is_list(list) and is_list(atom_or_list)) do
+    var = Macro.var(:"arg#{UUID.uuid4(:hex)}", acc.env.module)
+    ast_body = quote generated: true do
+      case unquote(tuple) do
+        list when is_list(list) ->
+          Enum.flat_map(list, fn
+            {:safe, list} -> list
+            other -> [other]
+          end)
+        {:safe, list} ->
+          list
+        other ->
+          to_string(other)
       end
-    ]
+    end
+
+    ast = quote do: unquote(var) = unquote(ast_body)
+
+    %{acc | iolist: acc.iolist ++ [var], dynamic: acc.dynamic ++ [ast]}
   end
 
-  def to_iolist(tuple, _) do
-    [ tuple ]
+  def to_iolist(tuple, %{iolist: iolist} = acc) do
+    %{acc | iolist: iolist ++ [ tuple ]}
   end
 end
 
 defimpl ExxHtml.Iolist, for: Any do
-  def to_iolist(other, _) do
-    [to_string(other)]
+  def to_iolist(other, %{iolist: iolist} = acc) do
+    %{acc | iolist: iolist ++ [to_string(other)]}
   end
 end
