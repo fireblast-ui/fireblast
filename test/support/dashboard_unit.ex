@@ -1,5 +1,6 @@
 defmodule Fireblast.DashboardUnit do
   use Fireblast
+
   def render(%{attributes: %{"data_index" => data_index}, children: children}) do
     ~x(
       <>

@@ -8,6 +8,7 @@ defmodule Fireblast.Util do
       map
       |> Enum.to_list()
       |> do_map_to_quoted_map()
+
     {:%{}, [], keyword_list}
   end
 

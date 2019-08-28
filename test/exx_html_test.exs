@@ -22,9 +22,11 @@ defmodule FireblastTest do
 
   test "Mapping over of children" do
     list = [1, 2, 3]
+
     render_item = fn item ->
       ~x(<p>#{item}</p>)
     end
+
     assert {:safe, iolist} = ~x(
       <div id="1">
         #{Enum.map(list, render_item)}
@@ -57,14 +59,14 @@ defmodule FireblastTest do
     {:safe, clear_button} = ~x(
       <button
         class_name="clear-completed"
-        on_click=#{fn (_) -> nil end}>
+        on_click=#{fn _ -> nil end}>
         Clear completed
       </button>
     )
 
     now_showing = "ALL_TODOS"
     count = 5
-    active_todo_word = if count > 1 , do: "items", else: "item"
+    active_todo_word = if count > 1, do: "items", else: "item"
 
     assert {:safe, _} = ~x(
       <footer class_name="footer">

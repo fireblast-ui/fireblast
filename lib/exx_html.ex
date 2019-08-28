@@ -1,5 +1,4 @@
 defmodule Fireblast do
-
   use Exx
   alias Fireblast.Iolist
 
@@ -11,7 +10,9 @@ defmodule Fireblast do
   end
 
   def process_exx(exx, env) do
-    %{iolist: iolist, dynamic: dynamic} = Iolist.to_iolist(exx, %{env: env, dynamic: [], iolist: [], vars_count: 0})
+    %{iolist: iolist, dynamic: dynamic} =
+      Iolist.to_iolist(exx, %{env: env, dynamic: [], iolist: [], vars_count: 0})
+
     safe = {:safe, iolist}
     {:__block__, [], dynamic ++ [safe]}
   end
