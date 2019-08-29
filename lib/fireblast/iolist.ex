@@ -14,6 +14,7 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
 
     module =
       if module_alias do
+        Kernel.LexicalTracker.alias_dispatch(acc.env.lexical_tracker, atom_module)
         {:__aliases__, [alias: module_alias], [String.to_atom(name)]}
       else
         atom_module
