@@ -1,5 +1,7 @@
 # Fireblast
 
+[![Build Status](https://travis-ci.com/fireblast-ui/fireblast.svg?branch=master)](https://travis-ci.com/fireblast-ui/fireblast)
+
 Fireblast is a html component library that uses a JSX like syntax
 
 ## Installation
