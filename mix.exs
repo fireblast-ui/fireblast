@@ -5,7 +5,7 @@ defmodule Fireblast.MixProject do
     [
       app: :fireblast,
       version: "0.1.1",
-      elixir: "~> 1.9",
+      elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
