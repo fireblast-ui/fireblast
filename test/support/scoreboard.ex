@@ -1,5 +1,5 @@
 defmodule Fireblast.Scoreboard do
-  use Fireblast
+  import Fireblast
 
   def render(%{attributes: %{"class_name" => class_name, "scores" => scores}}) do
     ~x(<>
