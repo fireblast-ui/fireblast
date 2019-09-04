@@ -1,7 +1,7 @@
 defmodule FireblastTest do
   use ExUnit.Case
   doctest Fireblast
-  use Fireblast
+  import Fireblast
 
   alias Fireblast.{TestComponent, MyCounter, DashboardUnit, Scoreboard}
 

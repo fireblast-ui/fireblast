@@ -1,5 +1,5 @@
 defmodule Fireblast.MyCounter do
-  use Fireblast
+  import Fireblast
 
   def render(%{attributes: %{"count" => count}}) do
     ~x(<div>#{count}</div>)
