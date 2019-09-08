@@ -103,6 +103,21 @@ defmodule FireblastTest do
     )
   end
 
+  test "phoenix section test" do
+    assert {:safe, iolist} = ~x(
+      <section class="phx-hero">
+        <h1>Welcome to Phoenix</h1>
+        <p>A productive web framework that<br/>does not compromise speed or maintainability.</p>
+      </section>
+    )
+    assert TestHelpers.clean_whitespace(~s(
+      <section class="phx-hero">
+        <h1>Welcome to Phoenix</h1>
+        <p>A productive web framework that<br/>does not compromise speed or maintainability.</p>
+      </section>
+    )) == :erlang.iolist_to_binary(iolist)
+  end
+
   def test_function(arg) do
     ~x(<TestComponent id="1">#{arg}</TestComponent>)
   end
