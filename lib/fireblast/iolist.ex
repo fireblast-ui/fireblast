@@ -7,7 +7,7 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
+      |> Enum.reduce(%{env: acc.env, iolist: [], dynamic: acc.dynamic}, &Fireblast.Iolist.to_iolist/2)
 
     atom_module = String.to_atom("Elixir." <> name)
     module_alias = Keyword.get(acc.env.aliases, atom_module)
@@ -37,12 +37,29 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
   end
 
   def to_iolist(
+        %{name: name, attributes: attributes, children: [], type: :tag},
+        %{iolist: iolist} = acc
+      ) do
+
+    %{
+      acc
+      | iolist:
+        iolist ++
+          List.flatten([
+            "<#{name}",
+            Enum.map(attributes, fn {key, value} -> [" #{key}=\"", value, "\""] end),
+            "/>"
+          ])
+    }
+  end
+
+  def to_iolist(
         %{name: name, attributes: attributes, children: children, type: :tag},
         %{iolist: iolist} = acc
       ) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
+      |> Enum.reduce(%{env: acc.env, iolist: [], dynamic: acc.dynamic}, &Fireblast.Iolist.to_iolist/2)
 
     %{
       acc
