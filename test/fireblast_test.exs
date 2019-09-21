@@ -118,6 +118,12 @@ defmodule FireblastTest do
     )) == :erlang.iolist_to_binary(iolist)
   end
 
+  test "unsafe variable data" do
+    unsafe_html = "<hello>"
+    assert {:safe, iolist} = ~x(<div id="1">#{unsafe_html}</div>)
+    assert ~s(<div id="1">&lt;hello&gt;</div>) == :erlang.iolist_to_binary(iolist)
+  end
+
   def test_function(arg) do
     ~x(<TestComponent id="1">#{arg}</TestComponent>)
   end

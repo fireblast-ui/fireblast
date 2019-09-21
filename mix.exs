@@ -28,7 +28,8 @@ defmodule Fireblast.MixProject do
   defp deps do
     [
       {:ex_xml, "~> 0.1"},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:phoenix_html, "~> 2.13"}
     ]
   end
 
