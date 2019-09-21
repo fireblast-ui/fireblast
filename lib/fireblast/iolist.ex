@@ -112,20 +112,20 @@ defimpl Fireblast.Iolist, for: Tuple do
       quote generated: true do
         case unquote(tuple) do
           list when is_list(list) ->
-            Enum.flat_map(list, fn
+            {:safe, Enum.flat_map(list, fn
               {:safe, list} -> list
               other -> [other]
-            end)
+            end)}
 
           {:safe, list} ->
-            list
+            {:safe, list}
 
           other ->
-            to_string(other)
+            Phoenix.HTML.html_escape(other)
         end
       end
 
-    ast = quote do: unquote(var) = unquote(ast_body)
+    ast = quote do: {:safe, unquote(var)} = unquote(ast_body)
 
     %{acc | iolist: acc.iolist ++ [var], dynamic: acc.dynamic ++ [ast]}
   end
