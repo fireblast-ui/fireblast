@@ -7,7 +7,10 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.reduce(%{env: acc.env, iolist: [], dynamic: acc.dynamic}, &Fireblast.Iolist.to_iolist/2)
+      |> Enum.reduce(
+        %{env: acc.env, iolist: [], dynamic: acc.dynamic},
+        &Fireblast.Iolist.to_iolist/2
+      )
 
     atom_module = String.to_atom("Elixir." <> name)
     module_alias = Keyword.get(acc.env.aliases, atom_module)
@@ -40,16 +43,15 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
         %{name: name, attributes: attributes, children: [], type: :tag},
         %{iolist: iolist} = acc
       ) do
-
     %{
       acc
       | iolist:
-        iolist ++
-          List.flatten([
-            "<#{name}",
-            Enum.map(attributes, fn {key, value} -> [" #{key}=\"", value, "\""] end),
-            "/>"
-          ])
+          iolist ++
+            List.flatten([
+              "<#{name}",
+              Enum.map(attributes, fn {key, value} -> [" #{key}=\"", value, "\""] end),
+              "/>"
+            ])
     }
   end
 
@@ -59,7 +61,10 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
       ) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
-      |> Enum.reduce(%{env: acc.env, iolist: [], dynamic: acc.dynamic}, &Fireblast.Iolist.to_iolist/2)
+      |> Enum.reduce(
+        %{env: acc.env, iolist: [], dynamic: acc.dynamic},
+        &Fireblast.Iolist.to_iolist/2
+      )
 
     %{
       acc
@@ -112,10 +117,11 @@ defimpl Fireblast.Iolist, for: Tuple do
       quote generated: true do
         case unquote(tuple) do
           list when is_list(list) ->
-            {:safe, Enum.flat_map(list, fn
-              {:safe, list} -> list
-              other -> [other]
-            end)}
+            {:safe,
+             Enum.flat_map(list, fn
+               {:safe, list} -> list
+               other -> [other]
+             end)}
 
           {:safe, list} ->
             {:safe, list}
