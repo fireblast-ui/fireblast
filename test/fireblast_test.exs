@@ -124,6 +124,12 @@ defmodule FireblastTest do
     assert ~s(<div id="1">&lt;hello&gt;</div>) == :erlang.iolist_to_binary(iolist)
   end
 
+  test "string interpolation test" do
+    world = "World"
+    assert {:safe, iolist} = ~x(<div>Hello #{world}</div>)
+    assert ~s(<div>Hello World</div>) == :erlang.iolist_to_binary(iolist)
+  end
+
   def test_function(arg) do
     ~x(<TestComponent id="1">#{arg}</TestComponent>)
   end
