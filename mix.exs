@@ -29,7 +29,9 @@ defmodule Fireblast.MixProject do
     [
       {:ex_xml, "~> 0.1"},
       {:uuid, "~> 1.1"},
-      {:phoenix_html, "~> 2.13"}
+      {:phoenix_html, "~> 2.13"},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 

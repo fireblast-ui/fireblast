@@ -4,6 +4,7 @@ defprotocol Fireblast.Iolist do
 end
 
 defimpl Fireblast.Iolist, for: ExXml.Element do
+  @spec to_iolist(%ExXml.Element{}, %{iolist: iolist(), dynamic: list()}) :: %{iolist: iolist(), dynamic: list()}
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
@@ -83,6 +84,7 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
 end
 
 defimpl Fireblast.Iolist, for: ExXml.Fragment do
+  @spec to_iolist(%ExXml.Fragment{}, %{iolist: iolist(), dynamic: list()}) :: %{iolist: iolist(), dynamic: list()}
   def to_iolist(%{children: children}, acc) do
     children
     |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
@@ -90,6 +92,7 @@ defimpl Fireblast.Iolist, for: ExXml.Fragment do
 end
 
 defimpl Fireblast.Iolist, for: List do
+  @spec to_iolist([%ExXml.Fragment{} | %ExXml.Element{}], %{iolist: iolist(), dynamic: list()}) :: %{iolist: iolist(), dynamic: list()}
   def to_iolist(list, acc) do
     list
     |> Enum.reduce(acc, &Fireblast.Iolist.to_iolist/2)
@@ -97,12 +100,14 @@ defimpl Fireblast.Iolist, for: List do
 end
 
 defimpl Fireblast.Iolist, for: BitString do
+  @spec to_iolist(binary, %{iolist: iolist(), dynamic: list()}) :: %{iolist: iolist(), dynamic: list()}
   def to_iolist(binary, %{iolist: iolist} = acc) do
     %{acc | iolist: iolist ++ [binary]}
   end
 end
 
 defimpl Fireblast.Iolist, for: Tuple do
+  @spec to_iolist(tuple, %{iolist: iolist(), dynamic: list()}) :: %{iolist: iolist(), dynamic: list()}
   def to_iolist({:safe, safe_iolist}, %{iolist: iolist} = acc) do
     %{acc | iolist: iolist ++ safe_iolist}
   end
@@ -142,6 +147,7 @@ defimpl Fireblast.Iolist, for: Tuple do
 end
 
 defimpl Fireblast.Iolist, for: Any do
+  @spec to_iolist(any(), %{iolist: iolist(), dynamic: list()}) :: %{iolist: iolist(), dynamic: list()}
   def to_iolist(other, %{iolist: iolist} = acc) do
     %{acc | iolist: iolist ++ [to_string(other)]}
   end
