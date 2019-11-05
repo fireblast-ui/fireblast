@@ -1,5 +1,5 @@
 %{
-  "ex_xml": {:hex, :ex_xml, "0.1.3", "e75ea7356c949f9cc0e3f5024321aeb136b41f7ada232a5990005dc20b03484d", [:mix], [{:nimble_parsec, "~> 0.5", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm"},
+  "ex_xml": {:hex, :ex_xml, "0.1.4", "af9b78c9fb15b8e8cd37be6f2977eb4af4726d91315c1432b463475b4f4aa052", [:mix], [{:nimble_parsec, "~> 0.5", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm"},
   "exx": {:git, "https://github.com/olafura/exx.git", "e37e4f4ad734196acb353d4c4ac24a613584d6d5", [branch: "something_better"]},
   "mime": {:hex, :mime, "1.3.1", "30ce04ab3175b6ad0bdce0035cba77bba68b813d523d1aac73d9781b4d193cf8", [:mix], [], "hexpm"},
   "nimble_parsec": {:hex, :nimble_parsec, "0.5.1", "c90796ecee0289dbb5ad16d3ad06f957b0cd1199769641c961cfe0b97db190e0", [:mix], [], "hexpm"},
