@@ -5,6 +5,7 @@ end
 
 defimpl Fireblast.Iolist, for: ExXml.Element do
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
+    IO.inspect(children)
     %{iolist: children_iolist, dynamic: children_dynamic} =
       children
       |> Enum.reduce(

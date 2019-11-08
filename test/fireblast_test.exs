@@ -2,6 +2,7 @@ defmodule FireblastTest do
   use ExUnit.Case
   doctest Fireblast
   import Fireblast
+  alias Fireblast.Trans
 
   alias Fireblast.{TestComponent, MyCounter, DashboardUnit, Scoreboard}
 
@@ -127,6 +128,12 @@ defmodule FireblastTest do
   test "string interpolation test" do
     world = "World"
     assert {:safe, iolist} = ~x(<div>Hello #{world}</div>)
+    assert ~s(<div>Hello World</div>) == :erlang.iolist_to_binary(iolist)
+  end
+
+  test "trans test" do
+    world = "World"
+    assert {:safe, iolist} = ~x(<Trans>Hello #{world}</Trans>)
     assert ~s(<div>Hello World</div>) == :erlang.iolist_to_binary(iolist)
   end
 
