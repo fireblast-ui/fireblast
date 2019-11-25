@@ -4,15 +4,15 @@ defprotocol Fireblast.Iolist do
 end
 
 defimpl Fireblast.Iolist, for: ExXml.Element do
-  def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
-    IO.inspect(children)
-    %{iolist: children_iolist, dynamic: children_dynamic} =
-      children
-      |> Enum.reduce(
-        %{env: acc.env, iolist: [], dynamic: acc.dynamic},
-        &Fireblast.Iolist.to_iolist/2
-      )
+  def has_pre_process_children?({:__aliases__, [alias: the_alias], _}) do
+    function_exported?(the_alias, :pre_process_children, 1)
+  end
 
+  def has_pre_process_children?(name) do
+    function_exported?(name, :pre_process_children, 1)
+  end
+
+  def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
     atom_module = String.to_atom("Elixir." <> name)
     module_alias = Keyword.get(acc.env.aliases, atom_module)
 
@@ -23,6 +23,14 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
       else
         atom_module
       end
+
+    IO.inspect(children)
+    %{iolist: children_iolist, dynamic: children_dynamic} =
+      children
+      |> Enum.reduce(
+        %{env: acc.env, iolist: [], dynamic: acc.dynamic},
+        &Fireblast.Iolist.to_iolist/2
+      )
 
     var = Macro.var(:"arg#{UUID.uuid4(:hex)}", acc.env.module)
     quoted_attributes = Fireblast.Util.map_to_quoted_map(attributes)
