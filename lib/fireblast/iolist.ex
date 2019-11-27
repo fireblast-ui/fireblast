@@ -4,13 +4,7 @@ defprotocol Fireblast.Iolist do
 end
 
 defimpl Fireblast.Iolist, for: ExXml.Element do
-  def has_pre_process_children?({:__aliases__, [alias: the_alias], _}) do
-    function_exported?(the_alias, :pre_process_children, 1)
-  end
-
-  def has_pre_process_children?(name) do
-    function_exported?(name, :pre_process_children, 1)
-  end
+  import Fireblast.Util
 
   def to_iolist(%{name: name, attributes: attributes, children: children, type: :module}, acc) do
     atom_module = String.to_atom("Elixir." <> name)
@@ -24,16 +18,20 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
         atom_module
       end
 
-    IO.inspect(children)
-    %{iolist: children_iolist, dynamic: children_dynamic} =
-      children
-      |> Enum.reduce(
-        %{env: acc.env, iolist: [], dynamic: acc.dynamic},
-        &Fireblast.Iolist.to_iolist/2
-      )
+    # IO.inspect(children)
+    %{iolist: children_iolist, dynamic: new_dynamic} =
+      if has_process_children?(module) do
+        call_process_children(module, children, acc)
+      else
+        children
+        |> Enum.reduce(
+          %{env: acc.env, iolist: [], dynamic: acc.dynamic},
+          &Fireblast.Iolist.to_iolist/2
+        )
+      end
 
     var = Macro.var(:"arg#{UUID.uuid4(:hex)}", acc.env.module)
-    quoted_attributes = Fireblast.Util.map_to_quoted_map(attributes)
+    quoted_attributes = map_to_quoted_map(attributes)
 
     ast_body =
       quote generated: true do
@@ -45,7 +43,7 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
       end
 
     ast = quote do: {:safe, unquote(var)} = unquote(ast_body)
-    %{acc | iolist: acc.iolist ++ [var], dynamic: children_dynamic ++ [ast]}
+    %{acc | iolist: acc.iolist ++ [var], dynamic: new_dynamic ++ [ast]}
   end
 
   def to_iolist(
@@ -68,7 +66,7 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
         %{name: name, attributes: attributes, children: children, type: :tag},
         %{iolist: iolist} = acc
       ) do
-    %{iolist: children_iolist, dynamic: children_dynamic} =
+    %{iolist: children_iolist, dynamic: new_dynamic} =
       children
       |> Enum.reduce(
         %{env: acc.env, iolist: [], dynamic: acc.dynamic},
@@ -86,7 +84,7 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
               children_iolist,
               "</#{name}>"
             ]),
-        dynamic: children_dynamic
+        dynamic: new_dynamic
     }
   end
 end

@@ -1,12 +1,28 @@
 defmodule Fireblast.Util do
-
   alias ExXml.{Element, Fragment}
+
+  def has_process_children?({:__aliases__, [alias: the_alias], _}) do
+    function_exported?(the_alias, :process_children, 1)
+  end
+
+  def has_process_children?(name) do
+    function_exported?(name, :process_children, 1)
+  end
+
+  def call_process_children({:__aliases__, [alias: the_alias], _}, children, acc) do
+    apply(the_alias, :process_children, [children, acc])
+  end
+
+  def call_process_children(name, children, acc) do
+    apply(name, :process_children, [children, acc])
+  end
 
   def map_to_quoted_map(map) when is_map(map) do
     do_map_to_quoted_map(map)
   end
 
-  def walk_ex_xml(%struct{} = element, acc, fun) when struct in [Element, Fragment] and is_function(fun) do
+  def walk_ex_xml(%struct{} = element, acc, fun)
+      when struct in [Element, Fragment] and is_function(fun) do
     do_walk_ex_xml(element, acc, fun)
   end
 
@@ -34,7 +50,9 @@ defmodule Fireblast.Util do
 
   defp do_walk_ex_xml(%struct{} = element, acc, fun) when struct in [Element, Fragment] do
     {new_element, new_acc} = fun.(element, acc)
-    {new_children, new_acc} = element.children |> Enum.reduce(new_acc, &do_walk_ex_xml(&1, &2, fun))
+
+    {new_children, new_acc} =
+      element.children |> Enum.reduce(new_acc, &do_walk_ex_xml(&1, &2, fun))
 
     {Map.put(new_element, :children, new_children), new_acc}
   end
