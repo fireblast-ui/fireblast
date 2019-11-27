@@ -5,7 +5,7 @@ defmodule Fireblast.Trans do
     # %{iolist: children_iolist, dynamic: children_dynamic} =
     children
     |> Enum.reduce(
-      %{env: acc.env, iolist: [], dynamic: []},
+      %{env: acc.env, iolist: [], dynamic: acc.dynamic},
       &Fireblast.Iolist.to_iolist/2
     )
   end
