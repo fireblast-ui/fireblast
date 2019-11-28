@@ -26,6 +26,11 @@ defmodule Fireblast.Util do
     do_walk_ex_xml(element, acc, fun)
   end
 
+  def walk_ex_xml(list, acc, fun) when is_list(list) and is_function(fun) do
+    list
+    |> Enum.reduce(acc, &do_walk_ex_xml(&1, &2, fun))
+  end
+
   defp do_map_to_quoted_map(map) when is_map(map) do
     keyword_list =
       map
