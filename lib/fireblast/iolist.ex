@@ -19,8 +19,11 @@ defimpl Fireblast.Iolist, for: ExXml.Element do
       end
 
     # IO.inspect(children)
+    # IO.puts("here 3 #{name}")
+
     %{iolist: children_iolist, dynamic: new_dynamic} =
       if has_process_children?(module) do
+        # IO.puts("here 2")
         call_process_children(module, children, acc)
       else
         children
