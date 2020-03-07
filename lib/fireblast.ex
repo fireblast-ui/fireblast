@@ -6,7 +6,7 @@ defmodule Fireblast do
     %{iolist: iolist, dynamic: dynamic} =
       Iolist.to_iolist(ex_xml, %{env: env, dynamic: [], iolist: [], vars_count: 0})
 
-    safe = {:safe, iolist}
+    safe = {:safe, Fireblast.Util.compress_io_list(iolist)}
     {:__block__, [], dynamic ++ [safe]}
   end
 end
