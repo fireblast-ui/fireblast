@@ -1,8 +1,8 @@
 %{
-  "ex_xml": {:hex, :ex_xml, "0.1.4", "af9b78c9fb15b8e8cd37be6f2977eb4af4726d91315c1432b463475b4f4aa052", [:mix], [{:nimble_parsec, "~> 0.5", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm", "e2144f3a45b38c0bb65b5fac2b1c24e922c74b93353af25df3273d8a1ad106bf"},
+  "ex_xml": {:hex, :ex_xml, "0.2.0", "d406fc420f867025470c4f577bccbf4406063f24233c05e7ffca7f5a20d68aa0", [:mix], [{:nimble_parsec, "~> 1.4", [hex: :nimble_parsec, repo: "hexpm", optional: false]}], "hexpm", "e3a7be144a280ccba9a233b2100da5249b36eeb3bad953078d529d18df2522c0"},
   "exx": {:git, "https://github.com/olafura/exx.git", "e37e4f4ad734196acb353d4c4ac24a613584d6d5", [branch: "something_better"]},
   "mime": {:hex, :mime, "2.0.6", "8f18486773d9b15f95f4f4f1e39b710045fa1de891fada4516559967276e4dc2", [:mix], [], "hexpm", "c9945363a6b26d747389aac3643f8e0e09d30499a138ad64fe8fd1d13d9b153e"},
-  "nimble_parsec": {:hex, :nimble_parsec, "0.5.1", "c90796ecee0289dbb5ad16d3ad06f957b0cd1199769641c961cfe0b97db190e0", [:mix], [], "hexpm", "00e3ebdc821fb3a36957320d49e8f4bfa310d73ea31c90e5f925dc75e030da8f"},
+  "nimble_parsec": {:hex, :nimble_parsec, "1.4.2", "8efba0122db06df95bfaa78f791344a89352ba04baedd3849593bfce4d0dc1c6", [:mix], [], "hexpm", "4b21398942dda052b403bbe1da991ccd03a053668d147d53fb8c4e0efe09c973"},
   "phoenix_html": {:hex, :phoenix_html, "4.2.1", "35279e2a39140068fc03f8874408d58eef734e488fc142153f055c5454fd1c08", [:mix], [], "hexpm", "cff108100ae2715dd959ae8f2a8cef8e20b593f8dfd031c9cba92702cf23e053"},
   "plug": {:hex, :plug, "1.17.0", "a0832e7af4ae0f4819e0c08dd2e7482364937aea6a8a997a679f2cbb7e026b2e", [:mix], [{:mime, "~> 1.0 or ~> 2.0", [hex: :mime, repo: "hexpm", optional: false]}, {:plug_crypto, "~> 1.1.1 or ~> 1.2 or ~> 2.0", [hex: :plug_crypto, repo: "hexpm", optional: false]}, {:telemetry, "~> 0.4.3 or ~> 1.0", [hex: :telemetry, repo: "hexpm", optional: false]}], "hexpm", "f6692046652a69a00a5a21d0b7e11fcf401064839d59d6b8787f23af55b1e6bc"},
   "plug_crypto": {:hex, :plug_crypto, "2.1.1", "19bda8184399cb24afa10be734f84a16ea0a2bc65054e23a62bb10f06bc89491", [:mix], [], "hexpm", "6470bce6ffe41c8bd497612ffde1a7e4af67f36a15eea5f921af71cf3e11247c"},

@@ -27,7 +27,7 @@ defmodule Fireblast.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_xml, "~> 0.1"},
+      {:ex_xml, "~> 0.2"},
       {:uuid, "~> 1.1"},
       {:phoenix_html, "~> 4.2"}
     ]
