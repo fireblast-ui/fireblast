@@ -29,7 +29,7 @@ defmodule Fireblast.MixProject do
     [
       {:ex_xml, "~> 0.1"},
       {:uuid, "~> 1.1"},
-      {:phoenix_html, "~> 2.13"}
+      {:phoenix_html, "~> 4.2"}
     ]
   end
 
